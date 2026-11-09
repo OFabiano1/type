@@ -42,6 +42,7 @@ fun App() {
     var notes by remember { mutableStateOf<List<Note>>(emptyList()) }
     var query by remember { mutableStateOf("") }
     var theme by remember { mutableStateOf(settings.theme) }
+    var currentNote by remember { mutableStateOf<Note?>(null) }
 
     fun toggleTheme() {
         theme = if (theme == Theme.DARK) Theme.LIGHT else Theme.DARK
@@ -52,11 +53,11 @@ fun App() {
         notes = repo.list()
     }
 
-    state.onAfterSave = { reload() }
-
     fun openNote(note: Note) {
         state.openNote(note)
         query = ""
+        currentNote = note
+        reload()
     }
 
     fun createNote() {
@@ -105,7 +106,12 @@ fun App() {
                     }
                 },
         ) {
-            TopBar(theme = theme, onToggleTheme = ::toggleTheme)
+            TopBar(
+                theme = theme,
+                onToggleTheme = ::toggleTheme,
+                onExport = { reload() },
+                currentNote = currentNote
+            )
             Row(Modifier.weight(1f)) {
                 Sidebar(
                     notes = notes,

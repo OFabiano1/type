@@ -46,7 +46,7 @@ compose.desktop {
         mainClass = "app.type.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.AppImage)
+            targetFormats(TargetFormat.Exe)
             packageName = "TYPE"
             packageVersion = "1.0.0"
 
