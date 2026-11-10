@@ -30,6 +30,7 @@ Feito em Kotlin + Compose Desktop.
 | `Ctrl+\` | modo foco   |
 | `Ctrl+,` | ajustes     |
 | `F2`     | renomear    |
+| `F1`     | sobre       |
 
 ## Onde ficam os dados
 

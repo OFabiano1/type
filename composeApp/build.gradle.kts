@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "app.type"
-version = "1.0.0"
+version = "0.3.1"
 
 repositories {
     google()
@@ -34,6 +34,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
     testImplementation(kotlin("test"))
+    testImplementation(compose.desktop.uiTestJUnit4)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 }
 
@@ -48,7 +49,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe)
             packageName = "TYPE"
-            packageVersion = "1.0.0"
+            packageVersion = "0.3.1"
 
             windows {
                 iconFile.set(project.rootProject.projectDir.resolve("logo.ico"))

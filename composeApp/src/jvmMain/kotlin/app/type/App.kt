@@ -129,6 +129,7 @@ fun App() {
                         event.key == Key.F && event.isCtrlPressed -> { focusMode = false; searchFocus.requestFocus(); true }
                         event.key == Key.Backslash && event.isCtrlPressed -> { focusMode = !focusMode; true }
                         event.key == Key.Comma && event.isCtrlPressed -> { showSettings = !showSettings; true }
+                        event.key == Key.F1 -> { showAbout = !showAbout; true }
                         event.key == Key.F2 -> { state.note.value?.let { renaming = it }; true }
                         event.key == Key.Escape && showSettings -> { showSettings = false; true }
                         else -> false

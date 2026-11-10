@@ -44,6 +44,7 @@ private fun TypeDialog(
     confirm: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    dismissText: String? = "cancelar",
     content: @Composable () -> Unit,
 ) {
     val p = LocalTypePalette.current
@@ -54,7 +55,7 @@ private fun TypeDialog(
         title = { Text(title, color = p.text, fontSize = 14.sp, fontFamily = TypeFonts.JetBrainsMono) },
         text = content,
         confirmButton = { SoftButton(confirm, onConfirm, color = p.accent) },
-        dismissButton = { SoftButton("cancelar", onDismiss) },
+        dismissButton = dismissText?.let { { SoftButton(it, onDismiss) } },
     )
 }
 
@@ -65,13 +66,14 @@ private val Shortcuts = listOf(
     "Ctrl+\\" to "modo foco",
     "Ctrl+," to "ajustes",
     "F2" to "renomear",
+    "F1" to "sobre",
 )
 
 @Composable
 fun AboutDialog(onDismiss: () -> Unit) {
     val p = LocalTypePalette.current
     val version = System.getProperty("jpackage.app-version") ?: "dev"
-    TypeDialog("type. $version", "fechar", onDismiss, onDismiss) {
+    TypeDialog("type. $version", "fechar", onDismiss, onDismiss, dismissText = null) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Image(painterResource("logo.png"), contentDescription = "logo do TYPE", modifier = Modifier.size(56.dp))
             Text("a quiet place to write.", color = p.text, fontSize = 13.sp, fontFamily = TypeFonts.JetBrainsMono)
