@@ -59,4 +59,12 @@ class NotesTest {
         val name = Notes.newNoteFileName(LocalDateTime.of(2026, 11, 7, 15, 0), emptySet(), slug = "ideia")
         assertEquals("ideia-20261107-150000.md", name)
     }
+
+    @Test
+    fun `withTitle troca a primeira linha preservando hashes`() {
+        assertEquals("\n# Novo\ncorpo", Notes.withTitle("\n# Velho\ncorpo", "Novo"))
+        assertEquals("Novo\ncorpo", Notes.withTitle("Velho\ncorpo", " Novo "))
+        assertEquals("Novo", Notes.withTitle("", "Novo"))
+        assertEquals("Velho", Notes.withTitle("Velho", "  "))
+    }
 }

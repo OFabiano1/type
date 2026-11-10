@@ -1,14 +1,12 @@
 package app.type.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -22,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.type.data.Note
-import app.type.data.Theme
 import app.type.editor.Export
 import app.type.editor.export.ExportName
 import app.type.theme.LocalTypePalette
@@ -33,10 +30,10 @@ import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 fun TopBar(
-    theme: Theme,
-    onToggleTheme: () -> Unit,
     onExport: () -> Unit,
-    currentNote: Note? = null,
+    onFocus: () -> Unit,
+    onSettings: () -> Unit,
+    currentNote: () -> Note?,
 ) {
     val palette = LocalTypePalette.current
     var expanded by remember { mutableStateOf(false) }
@@ -44,53 +41,31 @@ fun TopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp)
+            .height(40.dp)
             .background(palette.background)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Wordmark: "type" em minúsculas, ponto na cor de acento.
+        Text("type", color = palette.text, fontSize = 15.sp, fontFamily = TypeFonts.JetBrainsMono)
+        Text(".", color = palette.accent, fontSize = 15.sp, fontFamily = TypeFonts.JetBrainsMono)
         Spacer(Modifier.weight(1f))
-        Text(
-            text = if (theme == Theme.DARK) "tema: escuro" else "tema: claro",
-            color = palette.textDim,
-            fontSize = 12.sp,
-            fontFamily = TypeFonts.JetBrainsMono,
-            modifier = Modifier.clickable { onToggleTheme() },
-        )
-
-        Spacer(Modifier.width(12.dp))
-        Text(
-            text = "\u25BE exportar",
-            color = palette.textDim,
-            fontSize = 12.sp,
-            fontFamily = TypeFonts.JetBrainsMono,
-            modifier = Modifier.clickable { expanded = true },
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            DropdownMenuItem(
-                text = { Text("como .md") },
-                onClick = {
-                    currentNote?.let { note ->
-                        exportNoteToDialog(note, ".md", onExport)
-                    }
-                    expanded = false
-                },
-            )
-
-            DropdownMenuItem(
-                text = { Text("como .txt") },
-                onClick = {
-                    currentNote?.let { note ->
-                        exportNoteToDialog(note, ".txt", onExport)
-                    }
-                    expanded = false
-                },
-            )
+        SoftButton("foco", onFocus)
+        Box {
+            SoftButton("▾ exportar", { expanded = true })
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                for (ext in listOf(".md", ".txt")) {
+                    DropdownMenuItem(
+                        text = { Text("como $ext") },
+                        onClick = {
+                            expanded = false
+                            currentNote()?.let { exportNoteToDialog(it, ext, onExport) }
+                        },
+                    )
+                }
+            }
         }
+        SoftButton("ajustes", onSettings)
     }
 }
 

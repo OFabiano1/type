@@ -40,4 +40,29 @@ class AppSettingsTest {
         dir.resolve("settings.properties").writeText("lixo incompreensível")
         assertEquals(Theme.DARK, AppSettings(dir).theme)
     }
+
+    @Test
+    fun `ajustes de escrita persistem e respeitam limites`() {
+        AppSettings(dir).apply {
+            font = FontChoice.SERIF
+            fontSize = 99
+            lineHeightPct = 180
+            editorWidth = 600
+            lastNote = "abc"
+        }
+        val loaded = AppSettings(dir)
+        assertEquals(FontChoice.SERIF, loaded.font)
+        assertEquals(24, loaded.fontSize)
+        assertEquals(180, loaded.lineHeightPct)
+        assertEquals(600, loaded.editorWidth)
+        assertEquals("abc", loaded.lastNote)
+    }
+
+    @Test
+    fun `ajustes ausentes usam padrao`() {
+        val s = AppSettings(dir)
+        assertEquals(17, s.fontSize)
+        assertEquals(720, s.editorWidth)
+        assertEquals(null, s.lastNote)
+    }
 }

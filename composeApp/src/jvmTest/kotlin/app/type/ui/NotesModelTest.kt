@@ -48,4 +48,17 @@ class NotesModelTest {
     fun `sem match devolve vazia`() {
         assertEquals(0, NotesModel.filterNotes(notes, "xyz").size)
     }
+
+    @Test
+    fun `agrupa por recencia e omite grupos vazios`() {
+        val zone = java.time.ZoneId.of("UTC")
+        val today = java.time.LocalDate.of(2026, 11, 10)
+        fun at(d: java.time.LocalDate) = FileTime.from(d.atStartOfDay(zone).toInstant())
+        val ns = listOf(
+            note("a", "A", "").copy(modifiedAt = at(today)),
+            note("b", "B", "").copy(modifiedAt = at(today.minusDays(1))),
+            note("c", "C", "").copy(modifiedAt = at(today.minusDays(30))),
+        )
+        assertEquals(listOf("hoje", "ontem", "antes"), NotesModel.groupByRecency(ns, today, zone).map { it.first })
+    }
 }

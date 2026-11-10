@@ -25,6 +25,18 @@ object Notes {
         return if (clean.isBlank()) "Sem título" else clean.take(MAX_TITLE_LENGTH)
     }
 
+    // Renomear = reescrever a primeira linha não vazia (o título é derivado dela), preservando os '#'.
+    fun withTitle(text: String, title: String): String {
+        val clean = title.trim()
+        if (clean.isEmpty()) return text
+        val lines = text.lines().toMutableList()
+        val i = lines.indexOfFirst { it.isNotBlank() }
+        if (i < 0) return clean
+        val hashes = lines[i].trimStart().takeWhile { it == '#' }
+        lines[i] = if (hashes.isEmpty()) clean else "$hashes $clean"
+        return lines.joinToString("\n")
+    }
+
     fun noteSlug(text: String, max: Int = MAX_SLUG_LENGTH): String {
         val cleaned = Normalizer.normalize(text, Normalizer.Form.NFD)
             .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
