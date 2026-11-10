@@ -51,7 +51,7 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             windows {
-                iconFile.set(project.rootProject.projectDir.resolve("type.ico"))
+                iconFile.set(project.rootProject.projectDir.resolve("logo.ico"))
             }
         }
     }

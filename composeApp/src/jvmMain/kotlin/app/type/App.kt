@@ -38,6 +38,7 @@ import app.type.editor.EditorState
 import app.type.theme.LocalTypePalette
 import app.type.theme.Motion
 import app.type.theme.TypeTheme
+import app.type.ui.AboutDialog
 import app.type.ui.ConfirmDeleteDialog
 import app.type.ui.Editor
 import app.type.ui.EditorSettings
@@ -65,6 +66,7 @@ fun App() {
     var width by remember { mutableStateOf(settings.editorWidth) }
     var focusMode by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
+    var showAbout by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<Note?>(null) }
     var renaming by remember { mutableStateOf<Note?>(null) }
 
@@ -138,6 +140,7 @@ fun App() {
                     onExport = ::reload,
                     onFocus = { focusMode = !focusMode },
                     onSettings = { showSettings = !showSettings },
+                    onAbout = { showAbout = true },
                     currentNote = ::currentNote,
                 )
                 Row(Modifier.weight(1f)) {
@@ -180,6 +183,7 @@ fun App() {
                     onToggleTheme = ::toggleTheme,
                 )
             }
+            if (showAbout) AboutDialog(onDismiss = { showAbout = false })
             pendingDelete?.let { note ->
                 ConfirmDeleteDialog(note, onConfirm = { deleteNote(note); pendingDelete = null }, onDismiss = { pendingDelete = null })
             }

@@ -62,7 +62,7 @@ class AppSettingsTest {
     fun `ajustes ausentes usam padrao`() {
         val s = AppSettings(dir)
         assertEquals(17, s.fontSize)
-        assertEquals(720, s.editorWidth)
+        assertEquals(780, s.editorWidth)
         assertEquals(null, s.lastNote)
     }
 }

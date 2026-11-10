@@ -33,6 +33,7 @@ fun TopBar(
     onExport: () -> Unit,
     onFocus: () -> Unit,
     onSettings: () -> Unit,
+    onAbout: () -> Unit,
     currentNote: () -> Note?,
 ) {
     val palette = LocalTypePalette.current
@@ -66,6 +67,7 @@ fun TopBar(
             }
         }
         SoftButton("ajustes", onSettings)
+        SoftButton("sobre", onAbout)
     }
 }
 

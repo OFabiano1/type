@@ -37,7 +37,7 @@ class AppSettings(directory: Path) {
         set(value) = put(KEY_LINE_HEIGHT, value.coerceIn(LINE_HEIGHT).toString())
 
     var editorWidth: Int
-        get() = int(KEY_WIDTH, 720, WIDTH)
+        get() = int(KEY_WIDTH, 780, WIDTH)
         set(value) = put(KEY_WIDTH, value.coerceIn(WIDTH).toString())
 
     var lastNote: String?

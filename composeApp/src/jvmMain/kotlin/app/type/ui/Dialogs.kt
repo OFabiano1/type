@@ -1,7 +1,14 @@
 package app.type.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.AlertDialog
@@ -49,6 +56,33 @@ private fun TypeDialog(
         confirmButton = { SoftButton(confirm, onConfirm, color = p.accent) },
         dismissButton = { SoftButton("cancelar", onDismiss) },
     )
+}
+
+private val Shortcuts = listOf(
+    "Ctrl+N" to "nova nota",
+    "Ctrl+S" to "salvar",
+    "Ctrl+F" to "pesquisar",
+    "Ctrl+\\" to "modo foco",
+    "Ctrl+," to "ajustes",
+    "F2" to "renomear",
+)
+
+@Composable
+fun AboutDialog(onDismiss: () -> Unit) {
+    val p = LocalTypePalette.current
+    val version = System.getProperty("jpackage.app-version") ?: "dev"
+    TypeDialog("type. $version", "fechar", onDismiss, onDismiss) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Image(painterResource("logo.png"), contentDescription = "logo do TYPE", modifier = Modifier.size(56.dp))
+            Text("a quiet place to write.", color = p.text, fontSize = 13.sp, fontFamily = TypeFonts.JetBrainsMono)
+            for ((keys, what) in Shortcuts) {
+                Row {
+                    Text(keys, color = p.accent, fontSize = 12.sp, fontFamily = TypeFonts.JetBrainsMono, modifier = Modifier.width(80.dp))
+                    Text(what, color = p.textDim, fontSize = 12.sp, fontFamily = TypeFonts.JetBrainsMono)
+                }
+            }
+        }
+    }
 }
 
 @Composable
