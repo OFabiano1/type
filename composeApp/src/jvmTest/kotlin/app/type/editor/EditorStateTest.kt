@@ -90,4 +90,34 @@ class EditorStateTest {
         assertIs<EditorState.SaveStatus.Error>(state.status.value)
         assertTrue(state.text.value.isNotEmpty())
     }
+
+    @Test
+    fun `trocar de nota antes do debounce não perde o texto`() = runTest {
+        val state = EditorState(repo, backgroundScope, UnconfinedTestDispatcher(testScheduler))
+        val a = newNote("a")
+        val b = repo.create(LocalDateTime.of(2026, 11, 7, 12, 1), "b")
+        state.openNote(a)
+        state.updateText("editado em a")
+        state.openNote(b)
+        advanceTimeBy(EditorState.DEBOUNCE_MS * 2)
+        runCurrent()
+        assertEquals("editado em a", repo.read(a.id))
+        assertEquals("b", repo.read(b.id))
+        assertEquals(b.id, state.note.value!!.id)
+    }
+
+    @Test
+    fun `save em andamento não grava texto da nota seguinte`() = runTest {
+        val io = kotlinx.coroutines.test.StandardTestDispatcher(testScheduler)
+        val state = EditorState(repo, backgroundScope, io)
+        val a = newNote("a")
+        val b = repo.create(LocalDateTime.of(2026, 11, 7, 12, 1), "b")
+        state.openNote(a)
+        state.updateText("texto de a")
+        state.save() // agendado, ainda não rodou
+        state.openNote(b)
+        runCurrent()
+        assertEquals("texto de a", repo.read(a.id))
+        assertEquals(b.id, state.note.value!!.id)
+    }
 }

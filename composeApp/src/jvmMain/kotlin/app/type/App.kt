@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -92,6 +93,7 @@ fun App() {
 
     fun deleteNote(note: Note) {
         val wasActive = state.note.value?.id == note.id
+        if (wasActive) state.flush() // a Lixeira recebe a versão mais recente
         repo.delete(note.id)
         reload()
         if (wasActive) openNote(notes.firstOrNull() ?: repo.create(LocalDateTime.now()))
@@ -108,6 +110,10 @@ fun App() {
 
     // Texto atual (inclusive o ainda não salvo) para exportar.
     fun currentNote(): Note? = state.note.value?.copy(content = state.text.value)
+
+    DisposableEffect(Unit) {
+        onDispose { state.flush() } // fechar a janela dentro do debounce não perde texto
+    }
 
     LaunchedEffect(Unit) {
         state.onAfterSave = { reload() }

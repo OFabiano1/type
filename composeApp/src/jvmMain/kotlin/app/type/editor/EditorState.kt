@@ -33,6 +33,7 @@ class EditorState(
     private var autosave: Job? = null
 
     fun openNote(value: Note) {
+        flush() // a nota anterior não pode perder o que estava esperando o debounce
         note.value = value
         text.value = value.content
         dirty = false
@@ -46,16 +47,31 @@ class EditorState(
         scheduleAutosave()
     }
 
+    /** Grava já, na thread atual: ao trocar ou apagar a nota e ao fechar o app. */
+    fun flush() {
+        val current = note.value ?: return
+        if (!dirty) return
+        dirty = false
+        autosave?.cancel()
+        try {
+            repo.write(current.id, text.value)
+            status.value = SaveStatus.Saved(LocalDateTime.now())
+        } catch (_: IOException) {
+            status.value = SaveStatus.Error
+        }
+    }
+
     fun save() {
         val current = note.value ?: return
         if (!dirty) return
         dirty = false
         autosave?.cancel()
+        val content = text.value // capturado aqui: se a nota trocar antes da escrita, não mistura textos
         scope.launch(io) {
             status.value = SaveStatus.Saving
             try {
-                repo.write(current.id, text.value)
-                note.value = current.copy(content = text.value)
+                repo.write(current.id, content)
+                note.compareAndSet(current, current.copy(content = content))
                 status.value = SaveStatus.Saved(LocalDateTime.now())
                 onAfterSave?.invoke()
             } catch (_: IOException) {

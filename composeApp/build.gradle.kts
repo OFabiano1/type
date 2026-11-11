@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "app.type"
-version = "0.3.2"
+version = "0.3.3"
 
 repositories {
     google()
@@ -49,7 +49,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe)
             packageName = "TYPE"
-            packageVersion = "0.3.2"
+            packageVersion = "0.3.3"
 
             windows {
                 iconFile.set(project.rootProject.projectDir.resolve("logo.ico"))
